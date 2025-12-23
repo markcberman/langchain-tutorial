@@ -1,0 +1,16 @@
+name: langchain
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - pip
+  - setuptools
+  - wheel
+  - uv
+  - jupyterlab
+  - ipykernel
+  - git
+  - curl
+  - openssl
+  - ca-certificates
+  - sqlite
