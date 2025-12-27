@@ -8,30 +8,16 @@ dependencies:
   - setuptools
   - wheel
 
-  # --- Developer tooling ---
+  # --- Tooling ---
   - uv
   - git
   - curl
 
-  # --- Jupyter ---
+  # --- Jupyter (dev convenience) ---
   - jupyterlab
   - ipykernel
 
-  # --- System dependencies (important for Chroma persistence) ---
+  # --- System deps (important for Chroma persistence / TLS) ---
   - sqlite
   - openssl
   - ca-certificates
-
-  # --- Python packages via pip ---
-  - pip:
-      # LangChain core + integrations
-      - langchain
-      - langchain-core
-      - langchain-community
-      - langchain-openai
-
-      # Vector store (Python 3.13 compatible)
-      - chromadb
-
-      # Data utilities
-      - pandas

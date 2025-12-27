@@ -1,10 +1,33 @@
 [project]
 name = "langchain-learning"
 version = "0.1.0"
-description = "Add your description here"
+description = "LangChain + OpenAI learning notebooks (RAG, evaluation, agents)"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "faiss-cpu>=1.13.2",
-    "langchain-classic>=1.0.0",
+  # --- LangChain (v1) ---
+  "langchain",
+  "langchain-core",
+  "langchain-community",
+  "langchain-openai",
+  "langchain-text-splitters",
+
+  # Used by L1 notebook (if you later remove that import, you can drop this)
+  "langchain-classic",
+
+  # --- Vector store (Python 3.13 compatible) ---
+  "chromadb",
+
+  # --- Data + parsing ---
+  "pandas",
+  "pydantic",
+
+  # Some notebooks/tooling may import openai directly
+  "openai",
+
+  # Optional convenience for local env vars
+  "python-dotenv",
 ]
+
+[tool.uv]
+# uv will resolve dependencies into uv.lock
