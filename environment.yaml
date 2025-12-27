@@ -2,15 +2,36 @@ name: langchain
 channels:
   - conda-forge
 dependencies:
+  # --- Core runtime ---
   - python=3.13
   - pip
   - setuptools
   - wheel
+
+  # --- Developer tooling ---
   - uv
-  - jupyterlab
-  - ipykernel
   - git
   - curl
+
+  # --- Jupyter ---
+  - jupyterlab
+  - ipykernel
+
+  # --- System dependencies (important for Chroma persistence) ---
+  - sqlite
   - openssl
   - ca-certificates
-  - sqlite
+
+  # --- Python packages via pip ---
+  - pip:
+      # LangChain core + integrations
+      - langchain
+      - langchain-core
+      - langchain-community
+      - langchain-openai
+
+      # Vector store (Python 3.13 compatible)
+      - chromadb
+
+      # Data utilities
+      - pandas
