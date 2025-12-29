@@ -11,22 +11,18 @@ dependencies = [
   "langchain-community",
   "langchain-openai",
   "langchain-text-splitters",
-
   # Used by L1 notebook (if you later remove that import, you can drop this)
   "langchain-classic",
-
   # --- Vector store (Python 3.13 compatible) ---
   "chromadb",
-
   # --- Data + parsing ---
   "pandas",
   "pydantic",
-
   # Some notebooks/tooling may import openai directly
   "openai",
-
   # Optional convenience for local env vars
   "python-dotenv",
+  "ddgs>=9.10.0",
 ]
 
 [tool.uv]
