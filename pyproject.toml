@@ -23,6 +23,8 @@ dependencies = [
   # Optional convenience for local env vars
   "python-dotenv",
   "ddgs>=9.10.0",
+  "openapi-python-client>=0.28.0",
+  "wikipedia>=1.4.0",
 ]
 
 [tool.uv]
