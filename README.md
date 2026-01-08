@@ -12,28 +12,86 @@ This repository contains a set of **hands-on Jupyter notebooks** demonstrating m
 - Tool calling and routing
 - Conversational and tool-using agents
 
-The project targets **Python 3.13**, uses **Conda** for the base runtime, and **uv** for Python dependency locking via `pyproject.toml` and `uv.lock`.
+The project targets **Python 3.13**, uses **Conda** for the runtime (Python + Jupyter + system libs), and **uv** for Python dependency resolution + locking (`pyproject.toml` + `uv.lock`).
 
 ---
 
-## Quick Start (TL;DR)
+## Two audiences, two workflows
+
+### If you're a user (you just want to run the notebooks)
+You will:
+1. Create the Conda env from `environment.yaml`
+2. Install Python packages into that env using **the exported requirements lock** (`requirements.locked.txt`)
+3. Run JupyterLab from that env
+
+### If you're a developer (you will change dependencies)
+You will:
+1. Use `uv add ...` to change dependencies (updates `pyproject.toml` and `uv.lock`)
+2. Export a pip-compatible lock (`requirements.locked.txt`)
+3. Sync that lock into the Conda runtime env
+
+Why the extra export step? `uv.lock` is a uv project lockfile (TOML). `uv pip sync` expects a **requirements.txt-style** lock, not `uv.lock`.
+
+---
+
+## Quick Start (users)
 
 ```bash
-# 1. Create and activate the conda environment
+# 1) Create + activate the conda runtime env
 conda env create -f environment.yaml
 conda activate langchain
 
-# 2. Install Python dependencies (tracked by uv)
-uv sync
+# 2) Install the pinned Python dependencies into THIS conda env
+# (requirements.locked.txt is generated from uv.lock and committed)
+uv pip sync requirements.locked.txt
 
-# 3. Register the Jupyter kernel (one-time)
+# 3) Register the Jupyter kernel (one-time)
 python -m ipykernel install --user --name langchain --display-name "Python (langchain)"
 
-# 4. Launch JupyterLab
-jupyter lab
+# 4) Launch JupyterLab
+python -m jupyter lab
 ```
 
 Open any notebook and select the **Python (langchain)** kernel.
+
+> If `python -m jupyter lab` fails with “No module named jupyter”, install JupyterLab into the conda env:
+> `conda install -c conda-forge jupyterlab ipykernel`
+
+---
+
+## Developer workflow (changing dependencies)
+
+### 0) Prereqs
+- Have the conda env active when working on deps (so uv can pin to the same Python):
+  ```bash
+  conda activate langchain
+  ```
+
+### 1) Add / update a dependency
+```bash
+uv add langchain-tavily
+uv lock
+```
+
+### 2) Export a pip-compatible lockfile for the conda runtime
+```bash
+uv export --format requirements.txt --output-file requirements.locked.txt
+```
+
+### 3) Apply the lockfile to the active conda env
+```bash
+conda activate langchain
+uv pip sync requirements.locked.txt
+```
+
+### 4) Commit the right files
+Commit these when dependencies change:
+- `pyproject.toml`
+- `uv.lock`
+- `requirements.locked.txt`
+
+Commit/update this when **conda-level** dependencies change (Python version, JupyterLab, CUDA/PyTorch, etc.):
+- `environment.yaml` (recommended export: `conda env export --from-history > environment.yaml`)
 
 ---
 
@@ -44,6 +102,7 @@ Open any notebook and select the **Python (langchain)** kernel.
 ├── environment.yaml
 ├── pyproject.toml
 ├── uv.lock
+├── requirements.locked.txt
 ├── README.md
 ├── main.py
 ├── Data.csv
@@ -88,7 +147,7 @@ Covers response evaluation using LangChain evaluators.
 An end-to-end Retrieval-Augmented Generation pipeline with evaluation on an outdoor catalog dataset.
 
 ### L6 – Agents
-Modern tool-calling agents using `create_agent` and LangGraph-style state.
+Modern tool-calling agents using LangGraph-style state.
 
 ### L7 – OpenAI Functions (Legacy → Modern Context)
 Explains legacy OpenAI function-calling concepts for historical context and contrasts them with modern tool calling.
@@ -116,15 +175,6 @@ Builds multi-turn conversational agents with tool use and memory.
 
 ---
 
-## Environment & Dependency Model
-
-- **Conda** manages Python 3.13, Jupyter, and system libraries.
-- **uv** manages Python package resolution and locking.
-
-This separation keeps installs reproducible and avoids dependency drift.
-
----
-
 ## API Keys
 
 Set your OpenAI API key:
@@ -143,22 +193,38 @@ OPENAI_API_KEY=your-key-here
 
 ## Troubleshooting
 
-- Always run notebooks **top to bottom** after a kernel restart.
-- Invoke agents using the **messages** state format.
-- Ensure you are using the **Python (langchain)** kernel.
-- Do not install packages manually with `pip`; use `uv`.
+### “jupyter: command not found”
+Install Jupyter into the conda env:
+```bash
+conda install -c conda-forge jupyterlab ipykernel
+```
+And launch via:
+```bash
+python -m jupyter lab
+```
+
+### Notebook can’t import a package you just installed
+You are almost certainly on the wrong kernel. In Jupyter: **Kernel → Change Kernel → Python (langchain)**.
+
+To confirm inside a notebook cell:
+```python
+import sys
+sys.executable
+```
+
+### Don’t use this (common mistake)
+```bash
+uv pip sync uv.lock
+```
+`uv.lock` is not a requirements file. Use:
+- `uv sync` (for uv-managed project environments), or
+- `uv export ...` + `uv pip sync requirements.locked.txt` (for conda runtime envs)
 
 ---
 
 ## Requirements
 
-- macOS or Linux
+- macOS, Linux, or WSL2
 - Conda (Miniconda or Anaconda)
-- Python 3.13
+- uv installed
 - OpenAI API key
-
----
-
-## License
-
-Educational / experimental use.
