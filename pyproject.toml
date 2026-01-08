@@ -27,6 +27,7 @@ dependencies = [
   "wikipedia>=1.4.0",
   "langgraph>=1.0.5",
   "langgraph-prebuilt>=1.0.5",
+  "langchain-tavily>=0.2.16",
 ]
 
 [tool.uv]
