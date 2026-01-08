@@ -17,6 +17,10 @@ dependencies:
   - jupyterlab
   - ipykernel
 
+  # --- Graph visualization (LangGraph draw_png support) ---
+  - graphviz
+  - pygraphviz
+
   # --- System deps (important for Chroma persistence / TLS) ---
   - sqlite
   - openssl
