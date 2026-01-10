@@ -28,9 +28,13 @@ You will:
 You will:
 1. Use `uv add ...` to change dependencies (updates `pyproject.toml` and `uv.lock`)
 2. Export a pip-compatible lock (`requirements.locked.txt`)
-3. Sync that lock into the Conda runtime env
+3. Install that lock into the Conda runtime env **additively** (no uninstalls)
 
-Why the extra export step? `uv.lock` is a uv project lockfile (TOML). `uv pip sync` expects a **requirements.txt-style** lock, not `uv.lock`.
+Why the extra export step? `uv.lock` is a uv project lockfile (TOML). `uv pip install` expects a **requirements.txt-style** lock, not `uv.lock`.
+
+> ⚠️ IMPORTANT (shared Conda env): **Do not use `uv pip sync`** in this workflow.  
+> `uv pip sync` removes packages not listed in the requirements file and can uninstall Conda-owned tooling such as JupyterLab.  
+> Use `uv pip install -r requirements.locked.txt` instead.
 
 ---
 
@@ -43,7 +47,7 @@ conda activate langchain
 
 # 2) Install the pinned Python dependencies into THIS conda env
 # (requirements.locked.txt is generated from uv.lock and committed)
-uv pip sync requirements.locked.txt
+uv pip install -r requirements.locked.txt
 
 # 3) Register the Jupyter kernel (one-time)
 python -m ipykernel install --user --name langchain --display-name "Python (langchain)"
@@ -75,13 +79,13 @@ uv lock
 
 ### 2) Export a pip-compatible lockfile for the conda runtime
 ```bash
-uv export --format requirements.txt --output-file requirements.locked.txt
+uv pip compile pyproject.toml -o requirements.locked.txt
 ```
 
-### 3) Apply the lockfile to the active conda env
+### 3) Apply the lockfile to the active conda env (additive; safe in shared envs)
 ```bash
 conda activate langchain
-uv pip sync requirements.locked.txt
+uv pip install -r requirements.locked.txt
 ```
 
 ### 4) Commit the right files
@@ -218,7 +222,7 @@ uv pip sync uv.lock
 ```
 `uv.lock` is not a requirements file. Use:
 - `uv sync` (for uv-managed project environments), or
-- `uv export ...` + `uv pip sync requirements.locked.txt` (for conda runtime envs)
+- `uv pip compile ...` + `uv pip install -r requirements.locked.txt` (for conda runtime envs)
 
 ---
 
