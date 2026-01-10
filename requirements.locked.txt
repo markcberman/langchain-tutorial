@@ -8,6 +8,7 @@ aiohttp==3.13.2
     # via
     #   langchain-community
     #   langchain-tavily
+    #   tavily
 aiosignal==1.4.0
     # via aiohttp
 aiosqlite==0.22.1
@@ -395,6 +396,7 @@ requests==2.32.5
     #   posthog
     #   requests-oauthlib
     #   requests-toolbelt
+    #   tavily
     #   tiktoken
     #   wikipedia
 requests-oauthlib==2.0.0
@@ -449,6 +451,8 @@ starlette==0.50.0
     #   gradio
 sympy==1.14.0
     # via onnxruntime
+tavily==1.1.0
+    # via langchain-learning (pyproject.toml)
 tenacity==9.1.2
     # via
     #   chromadb
