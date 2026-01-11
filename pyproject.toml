@@ -31,6 +31,7 @@ dependencies = [
   "langgraph-checkpoint-sqlite>=3.0.1",
   "gradio>=6.3.0",
   "tavily>=1.1.0",
+  "aiosqlite<0.22.0",
 ]
 
 [tool.uv]
